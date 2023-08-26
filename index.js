@@ -43,6 +43,8 @@ app.get("/api/:date?", (req, res) => {
         utc: date.toUTCString(),
       });
     }
+  } else {
+    return res.json({ error: "Invalid Date" });
   }
   // Check if the input is in the YYYY-MM-DD format and is a valid date
   if (
