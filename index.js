@@ -26,6 +26,7 @@ app.get("/api/hello", function (req, res) {
 app.get("/api/:date?", (req, res) => {
   // Get the date from the request parameter
   let inputDate = req.params.date;
+
   // If no date is provided, return the current date and time
   if (!inputDate) {
     const now = new Date();
@@ -34,6 +35,7 @@ app.get("/api/:date?", (req, res) => {
       utc: now.toUTCString(),
     });
   }
+
   // Check if the date input is a Unix timestamp
   if (/^\d+$/.test(inputDate)) {
     const date = new Date(parseInt(inputDate));
@@ -43,21 +45,18 @@ app.get("/api/:date?", (req, res) => {
         utc: date.toUTCString(),
       });
     }
-  } else {
-    return res.json({ error: "Invalid Date" });
   }
-  // Check if the input is in the YYYY-MM-DD format and is a valid date
-  if (
-    /^\d{4}-\d{2}-\d{2}$/.test(inputDate) &&
-    !isNaN(new Date(inputDate).getTime())
-  ) {
-    const date = new Date(inputDate);
+
+  // Check if the input is in the YYYY-MM-DD format or any other format parsed by Date
+  const date = new Date(inputDate);
+  if (!isNaN(date.getTime())) {
     return res.json({
       unix: date.getTime(),
       utc: date.toUTCString(),
     });
   }
-  // If neither format is matched or the date is invalid, return an error
+
+  // If the date is invalid, return an error
   res.json({ error: "Invalid Date" });
 });
 
